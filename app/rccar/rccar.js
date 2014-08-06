@@ -6,110 +6,138 @@ exports.handle = function (req, res) {
   var controller = carController[action];
   var port = getSerialPort(id);
   if (controller == null) {
-    var ret = {};
-    ret.status = FAILURE;
-    ret.message = 'no such action!';
-    res.json(ret);
+    res.json(new jsonResponse(FAILURE, 'no such action!'));
   } else if (port == null) {
-    var ret = {};
-    ret.status = FAILURE;
-    ret.message = 'no port found';
-    res.json(ret);
+    res.json(new jsonResponse(FAILURE, 'no port found!'));
   } else {
-    controller(port, res);
+    serialDataAvailable = false;
+    serialOutput = null;
+    controller(port, req, res);
   }
 };
 
-var SUCCESS = 'success';
-var FAILURE = 'failure';
+var SUCCESS = 'ok';
+var FAILURE = 'error';
 
 var serialport = require('serialport');
 var SerialPort = serialport.SerialPort;
 var serialPort = init();
 
+var serialDataAvailable = false;
+var serialOutput;
+var defaultSerialTtl = 5;
+
 function getSerialPort(id){
     return serialPort;
+}
+
+function jsonResponse(status, message) {
+  this.status = status;
+  this.message = String(message);
 }
 
 function init() {
   //'/dev/tty.HC-06-DevB'
   //'/dev/tty.usbmodem1421'
-  var port = new SerialPort('/dev/tty.HC-06-DevB', {
+  var port = new SerialPort('/dev/tty.usbmodem1421', {
     baudrate: 9600,
     parser: serialport.parsers.readline('\n')
   }, false); 
   return port;
 }
 
+var defaultPower = 191;
 var carController = {
-  open: function(port, res){
+  open: function(port, req, res){
     port.open(function(error){
-      var ret = {};
+      var ret;
       if (error) {
-        ret.status = FAILURE;
+        res.json(new jsonResponse(FAILURE, error));
         console.log(error);
       } else {
-        ret.status = SUCCESS;
-        ret.message = 'port opened';
+        res.json(new jsonResponse(SUCCESS, 'port opened'));
         serialPort.on('data', function(data) {
-          console.log(data);
+          try {
+            serialOutput = JSON.parse(data);
+            serialDataAvailable = true;
+          } catch (error) {
+            serialOutput = new jsonResponse(FAILURE, error);
+            console.error(error);
+          }
         });
       }
-      res.json(ret);
     });
   },
-  close: function(port, res){
+  close: function(port, req, res){
     port.close(function(error){
-      var ret = {};
       if (error) {
-        ret.status = FAILURE;
+        res.json(new jsonResponse(FAILURE, error));
         console.log(error);
       } else {
-        ret.status = SUCCESS;
-        ret.message = 'port closed';
+        res.json(new jsonResponse(SUCCESS, 'port closed'));
       }
-      res.json(ret);
     });
   },
-  forward: function(port, res){
-    _do(port, 'F', res, 'go forwards');
+  forward: function(port, req, res){
+    _do(port, 'FG', res, 'go forwards');
+    _stop(port, req);
   },
-  backward: function(port, res){
-    _do(port, 'B', res, 'go backwards');
+  backward: function(port, req, res){
+    _do(port, 'BG', res, 'go backwards');
+    _stop(port, req);
   },
-  stop: function(port, res){
-    _do(port, 'S', res, 'stop');  
+  stop: function(port, req, res){
+    _do(port, 'S', res, 'stop');
   },
-  left: function(port, res){
-    _do(port, 'L', res, 'left');  
+  left: function(port, req, res){
+    _do(port, 'LG', res, 'go left');
+    _stop(port, req);
   },
-  right: function(port, res){
-    _do(port, 'R', res, 'right');  
+  right: function(port, req, res){
+    _do(port, 'RG', res, 'go right');
+    _stop(port, req);
   },
-  high: function(port, res){
-    _do(port, 'h', res, 'high speed');  
+  power: function(port, req, res){
+    var power = parseInt(req.query.power);
+    if (isNaN(power)) {
+      power = defaultPower;
+    }
+    _do(port, 'V' + power, res, 'set power');
   },
-  medium: function(port, res){
-    _do(port, 'm', res, 'medium speed');  
-  },
-  low: function(port, res){
-    _do(port, 'l', res, 'low speed');  
+  sensing: function(port, req, res) {
+    _do(port, 's', res, 'get sensing');
   }
 };
 
 function _do(port, command, res, message) {
   port.write(command, function(error) {
-    var ret = {};
-    ret.command = command;
     if(error) {
-      ret.status = FAILURE;
+      if (res) {
+        res.json(new jsonResponse(FAILURE, error));
+      }
       console.log(error);
-    } else {
-      ret.status = SUCCESS;
-      ret.message = message;
     }
-    res.json(ret);
+    if (res) {
+      _listen(res, defaultSerialTtl, message);
+    }
   });
+}
+
+function _listen(res, ttl, message) {
+  if(!serialDataAvailable) {
+    setTimeout(_listen, 500, res, --ttl, message);
+  } else {
+    serialOutput.message = message;
+    res.json(serialOutput);
+  }
+}
+
+var defaultTime = 500;
+function _stop(port, req) {
+    var time = req.query.time | defaultTime;
+    setTimeout(function(){
+      _do(port, 'S');
+    }, time);
 }
 
 
