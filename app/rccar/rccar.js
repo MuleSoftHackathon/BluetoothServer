@@ -39,7 +39,7 @@ function jsonResponse(status, message) {
 function init() {
   //'/dev/tty.HC-06-DevB'
   //'/dev/tty.usbmodem1421'
-  var port = new SerialPort('/dev/tty.usbmodem1421', {
+  var port = new SerialPort('/dev/tty.HC-06-DevB', {
     baudrate: 9600,
     parser: serialport.parsers.readline('\n')
   }, false); 
