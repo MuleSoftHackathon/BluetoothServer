@@ -59,14 +59,14 @@ function Sphero(dev){
 
 util.inherits(Sphero, events.EventEmitter);
 
-Sphero.prototype.connect = function () {
-    this.dev.open();
+Sphero.prototype.connect = function (callback) {
+    this.dev.open(callback);
 };
 
-Sphero.prototype.close = function () {
+Sphero.prototype.close = function (callback) {
     // don't know why, doesn't work with out arguments
     // this.setDataStreaming();
-    this.dev.close();
+    this.dev.close(callback);
 };
 
 Sphero.prototype.device = {
@@ -138,7 +138,7 @@ Sphero.prototype.sensors = {
         MASK1: 0x000000200
     },
     gyro_z: {
-        MASK1: 0x000000400
+        MASK1: 0x00001C00
     },
     gyro_y: {
         MASK1: 0x000000800
@@ -325,7 +325,7 @@ Sphero.prototype._send = function _send(DID, CID, buffer, callback) {
     toSend[1] = callback ? 0xff : 0xfe;
     toSend[2] = DID;
     toSend[3] = CID;
-    toSend[4] = callback ? this._setRequest(callback) : 0x00;
+    toSend[4] = 0x00;
     //toSend[4] = 0x00;
     // TODO: Refactor the Sphero device callbacks (for now, we're ignoring them, as they are not used)
     //
@@ -340,7 +340,7 @@ Sphero.prototype._send = function _send(DID, CID, buffer, callback) {
     // Set CHK
     //
     toSend[toSend.length - 1] = (sum & 0xff) ^ 0xff;
-    return this.dev.write(toSend);
+    return this.dev.write(toSend, callback);
 };
 
 Sphero.prototype.toString = function toString() {

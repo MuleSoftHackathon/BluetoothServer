@@ -6,7 +6,8 @@
   "dependencies": {
     "express": "^4.7.2",
     "node-sphero": "0.0.6",
-    "serialport": "^1.4.5"
+    "serialport": "^1.4.5",
+    "spheron": "0.0.3"
   },
   "devDependencies": {
     "grunt": "^0.4.5",

@@ -16,6 +16,5 @@ exports.rccarHandler = function(req, res) {
 };
 
 exports.spheroHandler = function(req, res) {
-    res.statusCode = null;
     sphero.action(req, res);
 };
