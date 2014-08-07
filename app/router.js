@@ -1,5 +1,5 @@
 'use strict';
-//var rccar = require('./rccar/rccar');
+var rccar = require('./rccar/rccar');
 var sphero = require('./sphero/sphero'),
     exports = module.exports;
 
@@ -12,7 +12,7 @@ exports.rootHandler = function(req, res) {
 
 
 exports.rccarHandler = function(req, res) {
-	//rccar.handle(req, res);
+	rccar.handle(req, res);
 };
 
 exports.spheroHandler = function(req, res) {
