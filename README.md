@@ -33,7 +33,7 @@ Installation
   ```
   node app/app.js
   ``` 
-  If the bluetooth server successfully connect to central server,
-  you are able to see the message 'Connect to central server'
+  *If the bluetooth server successfully connect to central server,
+  **you are able to see the message 'Connect to central server'
 
 
