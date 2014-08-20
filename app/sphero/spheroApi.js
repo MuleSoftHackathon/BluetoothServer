@@ -186,47 +186,39 @@ Sphero.prototype.setDataStreaming = function setDataStreaming(sensors, hertz, fr
     buffer.writeUInt32BE(mask1, 4);
     buffer.writeUInt32BE(mask2, 9);
     this._send(this.device.sphero.DID, this.device.sphero.commands.SET_DATA_STREAMING.CID, buffer, callback);
-    return callback;
 };
 
 Sphero.prototype.ping = function ping(callback) {
     this._send(this.device.core.DID, this.device.core.commands.PING.CID, null, callback);
-    return callback;
 };
 
 Sphero.prototype.getBluetoothInfo = function getBluetoothInfo(callback) {
     this._send(this.device.core.DID, this.device.core.commands.GET_BLUETOOTH_INFO.CID, null, callback);
-    return callback;
 };
 
 Sphero.prototype.setRGBLED = function setRGB(r, g, b, persist, callback) {
     var data = new Buffer([r & 0xff, g & 0xff, b & 0xff, (persist && 0x01) | 0]);
     this._send(this.device.sphero.DID, this.device.sphero.commands.SET_RGB_LED.CID, data, callback);
-    return callback;
 };
 
 Sphero.prototype.setBackLED = function setRGB(l, callback) {
     l = l >1? 1:l;
     l = l * 255;
     this._send(this.device.sphero.DID, this.device.sphero.commands.SET_BACK_LED.CID, new Buffer([l & 0xff]), callback);
-    return callback;
 };
 
 Sphero.prototype.setHeading = function setHeading(heading, callback) {
     this._send(this.device.sphero.DID, this.device.sphero.commands.SET_HEADING.CID, new Buffer([(heading & 0xff00) >> 8, heading & 0xff]), callback);
-    return callback;
 };
 
 Sphero.prototype.roll = function roll(heading, speed, callback) {
     speed = speed >1? 1:speed;
     speed = speed * 255;
     this._send(this.device.sphero.DID, this.device.sphero.commands.ROLL.CID, new Buffer([speed & 0xff, (heading & 0xff00) >> 8, heading & 0xff, 0x01]), callback);
-    return callback;
 };
 
 Sphero.prototype.setStabilization = function setStabilization(shouldStabilize, callback) {
     this._send(this.device.sphero.DID, this.device.sphero.commands.SET_STABILITZATION.CID, new Buffer([(shouldStabilize && 0x01) | 0]), callback);
-    return callback;
 };
 
 Sphero.prototype._setRequest = function _setRequest(callback) {
@@ -322,7 +314,8 @@ Sphero.prototype._send = function _send(DID, CID, buffer, callback) {
     //
     toSend[0] = 0xff;
     buffer.copy(toSend, 6);
-    toSend[1] = callback ? 0xff : 0xfe;
+    //toSend[1] = callback ? 0xff : 0xfe;
+    toSend[1] = 0xfe;
     toSend[2] = DID;
     toSend[3] = CID;
     toSend[4] = 0x00;
