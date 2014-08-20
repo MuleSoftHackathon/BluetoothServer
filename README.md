@@ -31,7 +31,7 @@ Installation
 
 5. Run bluetooth server
   ```
-  node app/app.js central_server_ip_address
+  node app/app.js central_server_ip your_key
   ``` 
   then, you should see the message
   ```
