@@ -25,7 +25,7 @@ req.on('error', function(e) {
 });
 
 // write data to request body
-req.end(JSON.stringify({device_id: 'Team1Key', device_type: 'bt', port: 8352}));
+req.end(JSON.stringify({device_id: process.argv[3], device_type: 'bt', port: 8352}));
 
 app.get('/', router.rootHandler);
 app.get('/sphero/:id/:action', router.spheroHandler);
