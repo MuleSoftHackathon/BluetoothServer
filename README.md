@@ -4,7 +4,7 @@ Bluetooth server enables the central server to control bluetooth devices
 
 Installation
 ------
-1. Install nodeJS from here[http://nodejs.org/]
+1. Install nodeJS from (here)[http://nodejs.org/]
 
 
 2. Clone the repository to your directory
