@@ -24,3 +24,7 @@ Installation
   ```
   sudo npm install
   ```
+5. Run bluetooth server
+  ```
+  node app/app.js
+  ```
