@@ -6,15 +6,18 @@ Installation
 ------
 1. Install nodeJS from http://nodejs.org/
 
+
 2. Clone the repository to your directory
   ```
   git clone https://github.com/MuleSoftHackathon/BluetoothServer.git
   ```
 
+
 3. Go to bluetooth directory
   ```
   cd BluetoothServer
   ``` 
+
 
 4. Install node modules
   ```
@@ -24,8 +27,9 @@ Installation
   ```
   sudo npm install
   ```
-5. Run bluetooth server
 
+
+5. Run bluetooth server
   ```
   node app/app.js
   ``` 
