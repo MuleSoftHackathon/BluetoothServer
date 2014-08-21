@@ -13,7 +13,7 @@ Installation
   ```
 
 
-3. Go to bluetooth directory
+3. Go to BluetoothServer directory
   ```
   cd BluetoothServer
   ``` 
