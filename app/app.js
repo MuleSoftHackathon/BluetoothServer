@@ -17,11 +17,15 @@ var options = {
 };
 
 var req = http.request(options, function(res) {
-    console.log('Connect to central server');
+    if( res.statusCode !== 200 ) {
+        console.log('Fail to connect to central server, please make sure your access key is correct');
+        return;
+    }
+    console.log('Successfullty connect to central server');
 });
 
 req.on('error', function(e) {
-    console.log('problem with request: ' + e.message);
+    console.log('Fail to connect to central server, please make sure the ip address and the port number is correct');
 });
 
 // write data to request body
