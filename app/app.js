@@ -19,6 +19,7 @@ var options = {
 var req = http.request(options, function(res) {
     if( res.statusCode !== 200 ) {
         console.log('Fail to connect to central server, please make sure your access key is correct');
+        process.exit();
         return;
     }
     console.log('Successfully connect to central server');
@@ -26,6 +27,7 @@ var req = http.request(options, function(res) {
 
 req.on('error', function(e) {
     console.log('Fail to connect to central server, please make sure the ip address and the port number is correct');
+    process.exit();
 });
 
 // write data to request body
