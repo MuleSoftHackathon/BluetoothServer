@@ -161,7 +161,7 @@ exports.action = function(request, response) {
                 break;
 
             case 'sensing':
-                response.status(200).send(JSON.stringify({status:'ok', message: notification}));
+                response.status(200).send(JSON.stringify({status:'ok', message: 'Sphero ' + action, data: notification}));
                 return;
         }
     }
