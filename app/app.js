@@ -10,7 +10,7 @@ var server = app.listen(8352,  function() {
 
 var options = {
     hostname: process.argv[2],
-    port: 8080,
+    port: process.argv[3],
     path: '/remoteDevice',
     headers: {'Content-Type': 'application/json'},
     method: 'POST'
@@ -25,7 +25,7 @@ req.on('error', function(e) {
 });
 
 // write data to request body
-req.end(JSON.stringify({device_id: process.argv[3], device_type: 'bt', port: 8352}));
+req.end(JSON.stringify({device_id: process.argv[4], device_type: 'bt', port: 8352}));
 
 app.get('/', router.rootHandler);
 app.get('/sphero/:id/:action', router.spheroHandler);
