@@ -1,4 +1,4 @@
-'use strict';
+use strict';
 var express = require('express'),
     router = require('./router'),
     http = require('http'),
@@ -21,7 +21,7 @@ var req = http.request(options, function(res) {
         console.log('Fail to connect to central server, please make sure your access key is correct');
         return;
     }
-    console.log('Successfullty connect to central server');
+    console.log('Successfully connect to central server');
 });
 
 req.on('error', function(e) {
