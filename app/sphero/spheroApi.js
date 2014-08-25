@@ -64,8 +64,6 @@ Sphero.prototype.connect = function (callback) {
 };
 
 Sphero.prototype.close = function (callback) {
-    // don't know why, doesn't work with out arguments
-    // this.setDataStreaming();
     this.dev.close(callback);
 };
 

@@ -42,12 +42,37 @@ sphero.on('message', function(msg) {
 sphero.on('close', function(msg) {
     console.log('Sphero Close');
     sphero.isConnected = false;
+    connectSphero();
 });
 
 sphero.on('error', function(msg) {
     console.log('Sphero Error');
     sphero.isConnected = false;
+    connectSphero();
 });
+
+
+
+function connectSphero() {
+    if( !sphero.isConnected ) {
+
+        sphero.connect(function(e){
+            if(e) {
+                sphero.isConnected = false;
+                //console.log(e);
+                sphero.close(function() {
+                    setTimeout(connectSphero, 3000);
+                });
+                return;
+            }
+            //console.log('Connection Success');
+            sphero.isConnected = true;
+            sphero.setDataStreaming([sphero.sensors.gyro_z], 1, 1);
+            pingPolling();
+        });
+    }
+}
+connectSphero();
 
 
 /**
@@ -80,22 +105,11 @@ exports.action = function(request, response) {
      * connecting to sphero
      */
     if( action === 'connect' ) {
-        if( !sphero.isConnected ) {
-            sphero.connect(function(e){
-                response.writeHead(200);
-                if(e) {
-                    response.end(JSON.stringify({status:'error', message: 'Sphero fails to connect :' + e}));
-                    return;
-                }
-                sphero.isConnected = true;
-                response.end(JSON.stringify({status:'ok', message: 'Sphero connected'}));
-                sphero.setDataStreaming([sphero.sensors.gyro_z], 1, 1);
-                pingPolling();
-            });
+        if( sphero.isConnected ) {
+            response.status(200).send(JSON.stringify({status: 'ok', message: 'Sphero connected'}));
         } else {
-            response.status(200).send(JSON.stringify({status:'ok', message: 'Sphero connected'}));
+            response.status(200).send(JSON.stringify({status: 'error', message: 'Sphero is disconnected'}));
         }
-        return;
     }
 
     /**
