@@ -12,4 +12,4 @@ npm install
 node app/app.js
 
 4. Register BluetoothServer
-POST http://centralserverhost/remoteDevice .... TO BE FINISHED
+POST http://centralserverhost/deviceserver/register .... TO BE FINISHED
