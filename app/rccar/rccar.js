@@ -126,6 +126,7 @@ function _do(port, command, res, message) {
         res.json(new jsonResponse(FAILURE, error));
       }
       console.log(error);
+      return;
     }
     if (res) {
       _listen(res, defaultSerialTtl, message);
