@@ -16,12 +16,25 @@ exports.handle = function (req, res) {
   }
 };
 
+exports.getPortName = function() {
+	return portName;
+}
+
+exports.setPortName = function(newPortName) {
+	portName = newPortName;
+	init();
+};
+
+//'/dev/tty.HC-06-DevB'
+//'/dev/tty.usbmodem1421'
+var portName = '/dev/tty.HC-06-DevB';
 var SUCCESS = 'ok';
 var FAILURE = 'error';
 
 var serialport = require('serialport');
 var SerialPort = serialport.SerialPort;
-var serialPort = init();
+var serialPort;
+init();
 
 var serialDataAvailable = false;
 var serialOutput;
@@ -37,13 +50,10 @@ function jsonResponse(status, message) {
 }
 
 function init() {
-  //'/dev/tty.HC-06-DevB'
-  //'/dev/tty.usbmodem1421'
-  var port = new SerialPort('/dev/tty.HC-06-DevB', {
+	serialPort = new SerialPort(portName, {
     baudrate: 9600,
     parser: serialport.parsers.readline('\n')
   }, false); 
-  return port;
 }
 
 var defaultPower = 191;
